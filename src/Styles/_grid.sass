@@ -1,0 +1,83 @@
+// Base grid styles
+*, :after, :before
+    box-sizing: border-box
+
+img
+    user-select: none
+    opacity: 1
+    transition: opacity .5s ease
+
+img.lazy
+    opacity: 0
+
+iframe
+    opacity: 1
+    transition: opacity .5s ease
+
+iframe.lazy
+    opacity: 0
+
+body
+    font: 15px/25px Montserrat,Arial,sans-serif
+    color: rgba($text, 1)
+    position: relative
+
+.container
+    max-width: 1440px
+    margin: auto
+    position: relative
+
+.container-fluid
+    width: 100%
+    position: relative
+
+.container-accent
+    background: rgba($accent, 1)
+
+.section
+    padding-top: 30px
+    padding-bottom: 30px
+    &__top
+        font-size: 10px
+        display: flex
+        justify-content: space-between
+        align-items: center
+        margin-bottom: 30px
+        .button
+            color: rgba($accent, 1)
+        &-container
+            display: flex
+    &__title
+        font-size: 26px
+        margin: 0
+        +normal
+        &:first-letter
+            text-transform: uppercase
+
+
+$bp-full: 1480px
+$bp-lg: 1200px
+$bp-md: 991px
+$bp-sm: 768px
+$bp-xs: 576px
+
+@media (max-width: $bp-full)
+    .container
+        max-width: 1170px
+
+@media (max-width: $bp-lg)
+    .container
+        max-width: 960px
+
+@media (max-width: $bp-md)
+    .container
+        max-width: 750px
+
+@media ( max-width: $bp-sm )
+    .container
+        max-width: 550px
+
+@media ( max-width: $bp-xs )
+    .container
+        max-width: 100%
+        padding: 0 20px
