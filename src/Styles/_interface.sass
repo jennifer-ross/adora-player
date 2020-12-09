@@ -98,6 +98,7 @@ a
 
 .input
 	position: relative
+	margin-bottom: 15px
 	&__container
 		position: relative
 	&__input
@@ -110,6 +111,8 @@ a
 		font-size: .867em
 		width: 100%
 		height: 100%
+		&:focus
+			border: 1px solid rgba($greyB8, 1)
 		&::placeholder
 			color: rgba($greyB8, 1)
 	&__button
@@ -125,6 +128,11 @@ a
 			color: rgba($text, 1)
 		&-icon
 			font-size: 17px
+	&__error
+		font-size: 12px
+		color: rgba($error, 1)
+		margin-top: 0
+		margin-bottom: 5px
 
 .btn-accent
 	background: rgba($accent, 1)
@@ -139,3 +147,38 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration
 	appearance: none
 	display: none
+
+.form-container
+	.form
+		display: flex
+		flex-direction: column
+		width: 100%
+		&__actions
+			display: flex
+			margin-top: 20px
+
+.login-page-section
+	display: flex
+	height: 100%
+	min-height: 100vh
+	justify-content: center
+	align-items: center
+	.welcome-head
+		display: flex
+		flex-direction: column
+		justify-content: center
+		align-items: center
+		&__logo
+			margin-bottom: 60px
+		&__h
+			margin-bottom: 40px
+	.form-container
+		max-width: 480px
+		display: flex
+		justify-content: center
+		align-items: center
+		margin: 0 auto
+		.form
+			&__actions
+				justify-content: center
+				align-items: center
