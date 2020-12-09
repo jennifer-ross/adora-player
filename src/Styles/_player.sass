@@ -1,0 +1,147 @@
+$progressHeight: 8px
+$soundHeight: 5px
+
+.player
+  backdrop-filter: blur(10px)
+  position: absolute
+  left: 0
+  bottom: 0
+  width: 100%
+  background: rgba($black, .8)
+  color: rgba($whiteFA, 1)
+  &__track
+    width: 100%
+    position: relative
+    audio
+      display: none
+      width: 0
+      height: 0
+  .progress-bar
+    width: 100%
+    position: relative
+    height: $progressHeight
+    &__bg, &__progress, &__progress-muted
+      width: 100%
+      height: $progressHeight
+      line-height: $progressHeight
+      position: absolute
+      left: 0
+      top: 0
+      transition: .3s ease
+      border-radius: 3px
+    &__bg
+      background: rgba($greyEC, 1)
+  .progress
+    &__line, &__line-muted
+      transition: .3s ease
+      background: rgba($gold, 1)
+      width: 100%
+      height: 100%
+      transform: scaleX(.6)
+      transform-origin: 0
+      border-radius: 3px
+    &__line-muted
+      background: rgba($grey, 1)
+      transform: scaleX(0)
+  &__user-actions
+    display: flex
+    justify-content: space-between
+    align-items: center
+  .button
+    margin: 0 8px
+    padding: 6px 8px
+    background: rgba($accent, 0)
+    font-size: 16px
+    line-height: 16px
+    color: rgba($whiteFA, 1)
+    &:hover
+      color: rgba($accent, 1)
+  .actions-art
+    display: flex
+    align-items: center
+    justify-content: center
+    margin-left: 20px
+    &__container
+      display: flex
+      justify-content: center
+      flex-direction: column
+      align-items: flex-start
+    &__title
+      +bold
+      font-size: 14px
+      line-height: 14px
+      margin-bottom: 3px
+    &__subtitle
+      margin-top: 3px
+      font-size: 12px
+      line-height: 12px
+    &__image
+      width: 40px
+      height: 40px
+      object-fit: contain
+      border-radius: 3px
+      margin-right: 10px
+  .user-actions
+    padding-top: 15px
+    padding-bottom: 15px
+    &__center-control
+      display: flex
+      .actions-time
+        display: flex
+        align-items: center
+        font-size: 12px
+        margin-right: 40px
+        &-divider
+          display: block
+          margin: 0 5px
+          width: 6px
+          height: 1px
+          background: rgba($whiteFA, 1)
+      .control-buttons
+        display: flex
+        &__random.button
+          font-size: 16px
+          line-height: 16px
+        &__prev.button
+          font-size: 20px
+          line-height: 20px
+        &__play.button
+          font-size: 20px
+          line-height: 20px
+          background: rgba($accent, 1)
+          color: rgba($whiteFA, 1)
+          border-radius: 50%
+          padding: 8px 8px
+          display: flex
+          justify-content: center
+          align-items: center
+          &:hover
+            color: rgba($greyEC, .8)
+          .icon
+            margin-left: 4px
+        &__next.button
+          font-size: 20px
+          line-height: 20px
+        &__repeat.button
+          font-size: 16px
+          line-height: 16px
+    &__right-control
+      display: flex
+      margin-right: 20px
+      .sound-buttons
+        display: flex
+        align-items: center
+        justify-content: center
+        .button
+          margin: 0 3px
+        &__like.button.liked
+          color: rgba($red, 1)
+          &:hover
+            color: rgba($redDarken, 1)
+        .sound-track
+          margin-right: 8px
+          width: 120px
+          .progress-bar
+            height: $soundHeight
+            &__bg, &__progress, &__progress-muted
+              height: $soundHeight
