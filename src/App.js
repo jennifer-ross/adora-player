@@ -4,8 +4,9 @@ import {connect} from 'react-redux';
 
 import './App.sass';
 import LoadingFull from "./Components/LoadingFull";
-import {getUserState} from "./Actions/authActions";
+import {getAuthState} from "./Actions/authActions";
 import PrivateRoute from "./Components/PrivateRouter";
+import {getUserState} from "./Actions/userActions";
 
 const Login = lazy(() => import("./Components/Pages/Login"));
 const Home = lazy(() => import("./Components/Pages/Home"));
@@ -13,6 +14,7 @@ const Home = lazy(() => import("./Components/Pages/Home"));
 class App extends Component {
 
     componentDidMount = () => {
+        this.props.getAuthState();
         this.props.getUserState();
     };
 
@@ -40,6 +42,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    getAuthState: () => dispatch(getAuthState()),
     getUserState: () => dispatch(getUserState()),
 });
 
