@@ -1,4 +1,4 @@
-export const USER = {
-    LOGIN_USER: 'LOGIN_USER',
-    LOGOUT_USER: 'LOGOUT_USER',
+export const AUTH = {
+    AUTH_USER: 'AUTH_USER',
+    UNAUTH_USER: 'UNAUTH_USER',
 };

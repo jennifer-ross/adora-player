@@ -16,8 +16,8 @@ class Home extends Component {
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.user.isAuthenticated,
-    token: state.user.token,
+    isAuthenticated: state.auth.isAuthenticated,
+    token: state.auth.token,
 });
 
 const mapDispatchToProps = dispatch => ({

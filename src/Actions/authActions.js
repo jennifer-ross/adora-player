@@ -1,14 +1,14 @@
-import {USER} from "./const";
+import {AUTH} from "./const";
 import axios from 'axios';
 import {CLIENT_ID, DEVICE_ID, SERVER_PORT} from "../env";
 
 const loginUser = p => ({
-    type: USER.LOGIN_USER,
+    type: AUTH.AUTH_USER,
     payload: p
 });
 
 export const logout= () => ({
-    type: USER.LOGOUT_USER
+    type: AUTH.UNAUTH_USER
 });
 
 const sendUserUrl = url => {
