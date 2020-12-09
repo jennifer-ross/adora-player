@@ -10,5 +10,5 @@ ReactDOM.render(
             <App />
         </Provider>
     </React.StrictMode>,
-    document.getElementsByTagName('body')[0]
+    document.getElementById('body')
 );
