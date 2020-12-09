@@ -1,6 +1,7 @@
 import {AUTH} from "./const";
 import axios from 'axios';
 import {CLIENT_ID, DEVICE_ID, SERVER_PORT} from "../env";
+import {getAuthStorage} from "./index";
 
 const loginUser = p => ({
     type: AUTH.AUTH_USER,
@@ -60,23 +61,17 @@ export const sendUserLogin = user => {
     };
 };
 
-export const getUserState = () => {
+export const getAuthState = () => {
     return dispatch => {
-        const adora_user = localStorage.adora_user;
+        const adora = getAuthStorage();
 
-        if (adora_user) {
+        if (adora !== false) {
             const isAuthenticated = true;
-            const adora = JSON.parse(adora_user);
+            const token = adora.access_token;
+            const expires_in = adora.expires_in;
+            const token_type = adora.token_type;
 
-            if (adora.hasOwnProperty('access_token') && adora.hasOwnProperty('expires_in') && adora.hasOwnProperty('token_type')) {
-                const token = adora.access_token;
-                const expires_in = adora.expires_in;
-                const token_type = adora.token_type;
-
-                dispatch(loginUser({token, isAuthenticated, expires_in, token_type}));
-            }else {
-                dispatch(logout());
-            }
+            dispatch(loginUser({token, isAuthenticated, expires_in, token_type}));
         }else {
             dispatch(logout());
         }
