@@ -7,7 +7,18 @@ body::-webkit-scrollbar
 	background-color: #F5F5F5
 
 body::-webkit-scrollbar-thumb
-	background-color: rgba($accent, 1)
+	background-color: rgba($black, .8)
+
+body
+	color: rgba($whiteFA, 1)
+
+.unavailable
+	width: 100%
+	height: 100vh
+	display: flex
+	justify-content: center
+	align-items: center
+	color: rgba($accentLight, 1)
 
 .lds-ring
 	display: inline-block
@@ -48,6 +59,7 @@ body::-webkit-scrollbar-thumb
 	left: 0
 	top: 0
 	z-index: 135
+	background: rgba($black, .8)
 	.lds-ring
 		div
 			width: 48px
@@ -104,15 +116,15 @@ a
 	&__input
 		outline: none
 		padding: 11px 44px 11px 16px
-		background: rgba($whiteFA, 1)
-		border: 1px solid rgba($greyEC, 1)
-		color: rgba($grey4, 1)
+		background: rgba($black, .2)
+		border: 1px solid rgba($black, .1)
+		color: rgba($greyB8, 1)
 		border-radius: 5px
 		font-size: .867em
 		width: 100%
 		height: 100%
 		&:focus
-			border: 1px solid rgba($greyB8, 1)
+			border: 1px solid rgba($greyB8, .15)
 		&::placeholder
 			color: rgba($greyB8, 1)
 	&__button
@@ -123,9 +135,9 @@ a
 		background: transparent
 		padding-left: 15px
 		padding-right: 15px
-		color: rgba($greyDark, 1)
+		color: rgba($greyB8, 1)
 		&:hover
-			color: rgba($text, 1)
+			color: rgba($whiteFA, 1)
 		&-icon
 			font-size: 17px
 	&__error
@@ -182,3 +194,200 @@ input[type="search"]::-webkit-search-results-decoration
 			&__actions
 				justify-content: center
 				align-items: center
+
+.window-control
+	position: relative
+	width: 100%
+	padding: 8px 5px 8px 20px
+	display: flex
+	justify-content: space-between
+	align-items: center
+	background: rgba($black, .8)
+	color: rgba($greyEC, 1)
+	user-select: none
+	&__title
+		font-size: 14px
+		line-height: 14px
+	&__drag
+		width: 100%
+		display: flex
+		flex: 1 1 auto
+		-webkit-app-region: drag
+		z-index: 4
+	&__actions
+		display: flex
+		.button
+			font-size: 12px
+			line-height: 12px
+			width: 24px
+			height: 24px
+			margin: 0
+			padding: 6px
+			display: flex
+			justify-content: center
+			align-items: center
+			z-index: 1
+			&:hover
+				background: rgba($accent, 1)
+				color: rgba($whiteFA, 1)
+		.btn-close
+			font-size: 16px
+			line-height: 16px
+			&:hover
+				background: rgba($red, 1)
+				color: rgba($whiteFA, 1)
+
+.container-section
+	padding: 0
+	height: 100%
+	& > .container-fluid
+		height: 100%
+		display: flex
+	.main-container
+		display: flex
+		flex-direction: column
+		flex: 1 1 auto
+
+.top-section
+	padding: 20px 20px
+	border-bottom: 1px solid rgba($greyDark, .1)
+	& > .container-fluid, & > .container
+		display: flex
+	&__actions
+		display: flex
+		margin-left: 60px
+		.button
+			background: transparent
+			font-size: 16px
+			line-height: 16px
+			margin: 0 4px
+			&:last-child
+				margin-right: 0
+
+.search-field
+	margin: 0
+	display: flex
+	flex: 1 1 auto
+	.input__container
+		display: flex
+		width: 100%
+		.input__input
+			padding: 7px 40px 7px 10px
+	.search__button
+		margin-left: -35px
+		background: rgba($black, .2)
+		border: none
+		border-left: 0
+		border-right: 0
+		padding: 0 10px 0 10px
+
+.left-menu
+	padding: 20px
+	border-right: 1px solid rgba($greyDark, .1)
+	min-height: 100%
+	.menu
+		position: relative
+		.menu-items-container
+			display: flex
+			flex-direction: column
+			align-items: flex-start
+			position: relative
+			a
+				width: 100%
+				display: flex
+		&-items-title, &__item
+			display: flex
+			margin: 18px 0
+			color: rgba($whiteFA, 1)
+			font-size: 14px
+			line-height: 14px
+			padding-right: 20px
+		&-items-title
+			color: rgba($greyDark, 1)
+		&__item
+			transition: .3s ease
+			width: 100%
+			&:after
+				transition: .3s ease
+			.icon
+				margin-right: 8px
+				width: 16px
+				height: auto
+				font-size: 14px
+				line-height: 14px
+			&:hover
+				color: rgba($accentLight, 1)
+		&__item.active
+			position: relative
+			color: rgba($accentLight, 1)
+			&:after
+				position: absolute
+				right: 5px
+				top: 50%
+				transform: translateY(-50%)
+				width: 6px
+				height: 6px
+				border-radius: 50%
+				content: ''
+				background: rgba($accentLight, 1)
+		&__actions
+			display: flex
+			justify-content: center
+			align-items: center
+			margin-top: 30px
+			flex-direction: column
+
+.adora-title
+	position: relative
+	color: rgba($accentLight, 1)
+	+bold
+	font-size: 16px
+	line-height: 16px
+	padding-top: 10px
+	text-align: center
+	img
+		object-fit: cover
+		width: 100%
+		height: 100%
+
+.profile
+	display: flex
+	flex-direction: column
+	align-items: center
+	padding: 30px 0
+	&__image
+		position: relative
+		width: 80px
+		height: 80px
+		img
+			width: 100%
+			height: 100%
+			object-fit: cover
+			border-radius: 50%
+			box-shadow: 0px 6px 16px 1px rgba($accentLight, .2)
+	&__name
+		font-size: 14px
+		line-height: 14px
+		+bold
+		color: rgba($whiteFA, 1)
+		margin-top: 8px
+	&__login
+		font-size: 11px
+		line-height: 11px
+		color: rgba($greyEC, 1)
+		margin-top: 8px
+
+.btn-create-playlist
+	text-transform: none
+	font-size: 12px
+	&:hover
+		opacity: .9
+	.icon
+		margin-left: 10px
+
+.home-section
+	padding: 20px
+	height: 100%
+	display: flex
+	flex-direction: column
+	flex: 1 1 auto

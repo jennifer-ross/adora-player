@@ -9,6 +9,7 @@ $soundHeight: 5px
   width: 100%
   background: rgba($black, .8)
   color: rgba($whiteFA, 1)
+  user-select: none
   &__track
     width: 100%
     position: relative
@@ -39,7 +40,7 @@ $soundHeight: 5px
       height: 100%
       transform: scaleX(.6)
       transform-origin: 0
-      border-radius: 3px
+      border-radius: 0
     &__line-muted
       background: rgba($grey, 1)
       transform: scaleX(0)
@@ -141,7 +142,11 @@ $soundHeight: 5px
         .sound-track
           margin-right: 8px
           width: 120px
+          .progress
+            &__line
+              border-radius: 5px
           .progress-bar
             height: $soundHeight
             &__bg, &__progress, &__progress-muted
               height: $soundHeight
+              border-radius: 5px
