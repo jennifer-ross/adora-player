@@ -4,9 +4,10 @@ import {connect} from 'react-redux';
 
 import './App.sass';
 import LoadingFull from "./Components/LoadingFull";
-import {getAuthState} from "./Actions/authActions";
 import PrivateRoute from "./Components/PrivateRouter";
-import {getUserState} from "./Actions/userActions";
+import WindowControl from "./Components/WindowControl";
+import {getAuthInfoState, getAccountInfoState} from "./Actions/apiActions";
+import {getAuthState} from "./Actions/authActions";
 
 const Login = lazy(() => import("./Components/Pages/Login"));
 const Home = lazy(() => import("./Components/Pages/Home"));
@@ -15,7 +16,8 @@ class App extends Component {
 
     componentDidMount = () => {
         this.props.getAuthState();
-        this.props.getUserState();
+        this.props.getAuthInfoState();
+        this.props.getAccountInfoState();
     };
 
     render() {
@@ -23,6 +25,7 @@ class App extends Component {
 
         return (
             <BrowserRouter>
+                <WindowControl/>
                 <Suspense fallback={<LoadingFull/>}>
                     <Switch>
                         <PrivateRoute exact path="/" isAuthenticated={isAuthenticated} component={Home}/>
@@ -38,12 +41,12 @@ class App extends Component {
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
-    token: state.auth.token,
 });
 
 const mapDispatchToProps = dispatch => ({
+    getAccountInfoState: () => dispatch(getAccountInfoState()),
+    getAuthInfoState: () => dispatch(getAuthInfoState()),
     getAuthState: () => dispatch(getAuthState()),
-    getUserState: () => dispatch(getUserState()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
