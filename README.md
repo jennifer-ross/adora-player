@@ -1,1 +1,2 @@
-# adora-palyer
+Adora - Unofficial AppPlayer for YandexMusic
+====
