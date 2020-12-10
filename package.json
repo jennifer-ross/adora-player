@@ -1,8 +1,8 @@
 {
-  "name": "YandexMusic",
+  "name": "AdoraPlayer",
   "version": "0.1.0",
   "private": true,
-  "description": "Free App for YandexMusic",
+  "description": "Unofficial AppPlayer for YandexMusic",
   "author": "jennifer2318",
   "build": {
     "appId": "com.jennifer2318.app",
