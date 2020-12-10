@@ -1,7 +1,7 @@
 import {AUTH} from "./const";
 import axios from 'axios';
-import {CLIENT_ID, DEVICE_ID, SERVER_PORT} from "../env";
-import {getAuthStorage} from "./index";
+import {SERVER_PORT} from "../env";
+import {getAuthStorage, setAdoraCookie} from "./index";
 
 const loginUser = p => ({
     type: AUTH.AUTH_USER,
@@ -22,12 +22,12 @@ const sendUserUrl = url => {
         })
             .then(response => {
                 if (response.data.success === true && response.data.payload) {
-                    const {access_token, expires_in, token_type} = response.data.payload;
+                    const {Session_id, sessguard, sessionid2, yandex_login} = response.data.payload;
 
                     localStorage.setItem('adora_user', JSON.stringify(response.data.payload));
 
                     const isAuthenticated = true;
-                    dispatch(loginUser({isAuthenticated, token: access_token, token_type, expires_in}));
+                    dispatch(loginUser({isAuthenticated, Session_id, sessguard, sessionid2, yandex_login}));
                 }
             })
             .catch(error => {
@@ -39,18 +39,9 @@ const sendUserUrl = url => {
 
 export const sendUserLogin = user => {
     return dispatch => {
-        const params = {
-            response_type: 'token',
-            client_id: CLIENT_ID,
-            device_id: DEVICE_ID,
-            login_hint: user,
-            force_confirm: true,
-        };
-
-        return axios.get(`https://oauth.yandex.ru/authorize?response_type=${params.response_type}&client_id=${params.client_id}&device_id=${params.device_id}&login_hint=${user.username}&force_confirm=${params.force_confirm}`,)
+        return axios.get(`https://pda-passport.yandex.ru/passport?mode=auth&login=${user.username}&twoweeks=yes&retpath=`,)
             .then(response => {
                 if (response.request.responseURL) {
-                    console.log(response);
                     dispatch(sendUserUrl(response.request.responseURL));
                 }
             })
@@ -67,11 +58,11 @@ export const getAuthState = () => {
 
         if (adora !== false) {
             const isAuthenticated = true;
-            const token = adora.access_token;
-            const expires_in = adora.expires_in;
-            const token_type = adora.token_type;
+            const {Session_id, sessguard, sessionid2, yandex_login} = adora;
 
-            dispatch(loginUser({token, isAuthenticated, expires_in, token_type}));
+            setAdoraCookie();
+
+            dispatch(loginUser({Session_id, isAuthenticated, sessguard, sessionid2, yandex_login}));
         }else {
             dispatch(logout());
         }

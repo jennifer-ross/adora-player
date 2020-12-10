@@ -7,3 +7,13 @@ export const USER = {
     SET_USER: 'SET_USER',
     CLEAR_USER: 'CLEAR_USER',
 };
+
+export const ACCOUNT_INFO = {
+    SET_ACCOUNT_INFO: 'SET_ACCOUNT_INFO',
+    CLEAR_ACCOUNT_INFO: 'CLEAR_ACCOUNT_INFO',
+};
+
+export const AUTH_INFO = {
+    SET_AUTH_INFO: 'SET_AUTH_INFO',
+    CLEAR_AUTH_INFO: 'CLEAR_AUTH_INFO',
+};
