@@ -9,6 +9,7 @@ import Icon from "../Icon";
 import LeftMenu from "../LeftMenu";
 import NewTracksBlock from "../NewTracksBlock";
 import {getAuthInfo, getAccountInfo} from "../../Actions/apiActions";
+import LoadingFull from "../LoadingFull";
 
 class Home extends Component {
 
@@ -19,12 +20,14 @@ class Home extends Component {
     componentDidMount() {
         const {authInfo, account} = this.props;
 
-        if (!account.login) {
-            this.props.getAccountInfo();
-        }
+        console.log(account, !account.login);
 
         if (!authInfo.login) {
             this.props.getAuthInfo();
+        }
+
+        if (!account.login) {
+            this.props.getAccountInfo();
         }
     }
 
@@ -33,7 +36,17 @@ class Home extends Component {
     };
 
     render() {
-        const {user} = this.props;
+        const {authInfo, account, getAuthInfo, getAccountInfo} = this.props;
+
+        if (!authInfo.login) {
+            getAuthInfo();
+            return (<LoadingFull/>);
+        }
+
+        if (!account.login) {
+            getAccountInfo();
+            return (<LoadingFull/>);
+        }
 
         return (
             <>
