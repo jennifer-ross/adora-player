@@ -1,18 +1,19 @@
 import {AUTH} from "../Actions/const";
 
 const initialState = {
-    token: '',
     isAuthenticated: false,
-    token_type: '',
-    expires_in: 0,
+    Session_id: {},
+    sessguard: {},
+    sessionid2: {},
+    yandex_login: {},
 };
 
 export default function authReducer(state = initialState, action) {
     switch (action.type) {
     case AUTH.AUTH_USER:
-        return {...state, token: action.payload.token, isAuthenticated: action.payload.isAuthenticated, token_type: action.payload.token_type, expires_in: action.payload.expires_in};
+        return {...state, ...action.payload};
     case AUTH.UNAUTH_USER:
-        return {...state, token: '', isAuthenticated: false, expires_in: 0, token_type: ''};
+        return {...state, yandex_login: {}, isAuthenticated: false, sessionid2: {}, Session_id: {}, sessguard: {}};
     default:
         return state;
     }
