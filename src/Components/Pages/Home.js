@@ -8,7 +8,7 @@ import Field from "../Field";
 import Icon from "../Icon";
 import LeftMenu from "../LeftMenu";
 import NewTracksBlock from "../NewTracksBlock";
-import {getAuthInfo, getAccountInfo} from "../../Actions/apiActions";
+import {getAuthInfo, getAccountInfo, getNewReleasesState} from "../../Actions/apiActions";
 import LoadingFull from "../LoadingFull";
 
 class Home extends Component {
@@ -18,17 +18,17 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const {authInfo, account} = this.props;
-
-        console.log(account, !account.login);
+        const {authInfo, account, getNewReleasesState, getAccountInfo, getAuthInfo} = this.props;
 
         if (!authInfo.login) {
-            this.props.getAuthInfo();
+            getAuthInfo();
         }
 
         if (!account.login) {
-            this.props.getAccountInfo();
+            getAccountInfo();
         }
+
+        getNewReleasesState();
     }
 
     fieldChangeHandler = obj => {
@@ -69,7 +69,12 @@ class Home extends Component {
                         <Switch>
                             <Route path='/' exact={true}>
                                 <Section className='home-section' container={"container-fluid"}>
-                                    <NewTracksBlock/>
+                                    <div className='main-container-first'>
+                                        <NewTracksBlock/>
+                                    </div>
+                                    <div className='main-container-last'>
+                                        
+                                    </div>
                                 </Section>
                             </Route>
                         </Switch>
@@ -90,6 +95,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     getAccountInfo: () => dispatch(getAccountInfo()),
     getAuthInfo: () => dispatch(getAuthInfo()),
+    getNewReleasesState: () => dispatch(getNewReleasesState()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(withRouter(Home)));

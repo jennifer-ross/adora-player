@@ -4,10 +4,11 @@ import classNames from 'classnames';
 
 class Section extends Component {
     render() {
-        const {className, children, container} = this.props;
+        const {className, children, container, sectionTop} = this.props;
 
         return (
             <section className={classNames('section', className)}>
+                {sectionTop ? <div className={`${container} section__top`}>{sectionTop}</div> : null}
                 <div className={container}>
                     {
                         children
@@ -26,6 +27,7 @@ Section.propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
     container: PropTypes.oneOf(['container', 'container-fluid']),
+    sectionTop: PropTypes.node
 };
 
 export default Section;
