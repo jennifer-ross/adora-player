@@ -37,6 +37,19 @@ export const getAuthInfoStorage = () => {
     return false;
 };
 
+export const getNewReleasesStorage = () => {
+    const releasesData = localStorage.newReleases;
+
+    if (releasesData) {
+        const releases = JSON.parse(releasesData);
+
+        if (releases.data.length > 0) {
+            return releases;
+        }
+    }
+    return false;
+};
+
 export const setCookie = (name, value, options = {}) => {
 
     options = {

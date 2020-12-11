@@ -1,6 +1,12 @@
-import {getAccountInfoStorage, getAuthInfoStorage, getAuthStorage, setAdoraCookie} from "./index";
+import {
+    getAccountInfoStorage,
+    getAuthInfoStorage,
+    getAuthStorage,
+    getNewReleasesStorage,
+    setAdoraCookie
+} from "./index";
 import axios from "axios";
-import {ACCOUNT_INFO, AUTH_INFO} from "./const";
+import {ACCOUNT_INFO, AUTH_INFO, NEW_RELEASES} from "./const";
 
 const apiAxios = axios.create({
     baseURL: 'https://music.yandex.ru/api/v2.1/',
@@ -79,24 +85,100 @@ export const getAccountInfoState = () => {
     };
 };
 
-export const getUserSettings = () => {
-    return dispatch => {
-        const adora = getAuthStorage();
+const setNewReleases = p => ({
+    type: NEW_RELEASES.SET_NEW_RELEASES,
+    payload: p
+});
 
-        if (adora !== false) {
-            return apiAxios.get(`/account/settings`, {
+export const clearNewReleases= () => ({
+    type: NEW_RELEASES.CLEAR_NEW_RELEASES
+});
+
+export const getNewReleases = () => {
+    return dispatch => {
+        const authInfo = getAuthInfoStorage();
+
+        if (authInfo !== false) {
+            return defaultAxios.get(`/handlers/main.jsx?what=new-releases&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
                 headers: {
-                    'Authorization': `OAuth ${adora.access_token}`,
-                    'Referer': 'https://music.yandex.ru'
+                    'X-Current-UID': authInfo.uid,
                 }
             })
                 .then(response => {
-                    console.log(response);
+                    if (response.data.newReleases) {
+                        const releases = {
+                            expires_at: Date.now() + (3600 * 1000),
+                            data: response.data.newReleases,
+                        };
+
+                        localStorage.setItem('newReleases', JSON.stringify(releases));
+                        dispatch(setNewReleases(releases));
+                    }
                 })
                 .catch(error => {
                     if (error.response && error.response.data) {
                     }
                 });
+        }
+    };
+};
+
+export const getAlbumInfo = async albumId => {
+    let album = {};
+    const authInfo = getAuthInfoStorage();
+
+    if (authInfo !== false && albumId) {
+        await defaultAxios.get(`/handlers/album.jsx?album=${albumId}&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
+            headers: {
+                'X-Current-UID': authInfo.uid,
+            }
+        })
+            .then(response => {
+                if (response.data) {
+                    album = response.data;
+                }
+            })
+            .catch(error => {
+                if (error.response && error.response.data) {
+                }
+            });
+    }
+
+    return album;
+};
+
+export const getAlbumsInfo = async albumsIds => {
+    const albums = [];
+    const authInfo = getAuthInfoStorage();
+
+    if (authInfo !== false && Array.isArray(albumsIds) && albumsIds.length > 0) {
+        await defaultAxios.get(`/handlers/albums.jsx?albumIds=${albumsIds.join()}&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
+            headers: {
+                'X-Current-UID': authInfo.uid,
+            }
+        })
+            .then(response => {
+                if (response.data) {
+                    albums.push(...response.data);
+                }
+            })
+            .catch(error => {
+                if (error.response && error.response.data) {
+                }
+            });
+    }
+    return albums;
+};
+
+export const getNewReleasesState = () => {
+    return dispatch => {
+        const releases = getNewReleasesStorage();
+
+        if (releases !== false && releases.expires_at >= Date.now()) {
+            dispatch(setNewReleases(releases));
+        }else {
+            dispatch(clearNewReleases());
+            dispatch(getNewReleases());
         }
     };
 };
