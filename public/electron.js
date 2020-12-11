@@ -14,6 +14,7 @@ let authWindow;
 let serverApp;
 let getCodeID;
 let server;
+let isInit = false;
 
 function createWindow() {
     let appIcon;
@@ -35,6 +36,8 @@ function createWindow() {
         icon: appIcon,
         minWidth: 960,
         minHeight: 740,
+        show: false,
+        backgroundColor: '#000000',
         webPreferences: {
             nodeIntegration: true,
             webSecurity: false,
@@ -46,6 +49,12 @@ function createWindow() {
             ? "http://localhost:3000"
             : `file://${path.join(__dirname, "../build/index.html")}`
     );
+    mainWindow.webContents.once('did-finish-load', () => {
+        if (!mainWindow.visible && isInit === false) {
+            mainWindow.show();
+            isInit = true;
+        }
+    });
     mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
         details.requestHeaders['Origin'] = 'https://music.yandex.ru';
         details.requestHeaders['Referer'] = 'https://music.yandex.ru/home';
@@ -53,7 +62,6 @@ function createWindow() {
         details.requestHeaders['X-Retpath-Y'] = 'https://music.yandex.ru/home';
         callback({cancel: false, requestHeaders: details.requestHeaders});
     });
-    mainWindow.webContents.openDevTools();
     mainWindow.on("closed", () => (mainWindow = null));
 }
 app.on("ready", () => {
