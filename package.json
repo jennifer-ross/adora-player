@@ -19,8 +19,6 @@
     "concurrently": "^5.3.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "electron": "^11.0.4",
-    "electron-builder": "^22.9.1",
     "electron-is-dev": "^1.2.0",
     "express": "^4.17.1",
     "i18next": "^19.8.4",
@@ -47,8 +45,8 @@
     "react-test": "react-scripts test --env=jsdom",
     "react-eject": "react-scripts eject",
     "electron-build": "electron-builder",
-    "release": "npm react-build && electron-builder --publish=always",
-    "build": "npm react-build && npm electron-build",
+    "release": "npm run react-build && electron-builder --publish=always",
+    "build": "npm run react-build && npm run electron-build",
     "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "eslint": "eslint",
     "eslint-fix": "eslint --fix ./src/**/*.js"
@@ -73,6 +71,8 @@
   },
   "devDependencies": {
     "eslint": "^7.14.0",
-    "eslint-plugin-react": "^7.21.5"
+    "eslint-plugin-react": "^7.21.5",
+    "electron": "^11.0.4",
+    "electron-builder": "^22.9.1"
   }
 }
