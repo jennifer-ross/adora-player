@@ -3,10 +3,12 @@ import authReducer from "./authReducer";
 import userReducer from "./userReducer";
 import accountInfoReducer from "./accountInfoReducer";
 import authInfoReducer from "./authInfoReducer";
+import newReleasesReducer from "./newReleasesReducer";
 
 export default combineReducers({
     auth: authReducer,
     user: userReducer,
     account: accountInfoReducer,
     authInfo: authInfoReducer,
+    newReleases: newReleasesReducer,
 });
