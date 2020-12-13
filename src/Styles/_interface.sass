@@ -289,6 +289,7 @@ input[type="search"]::-webkit-search-results-decoration
 	border-right: 1px solid rgba($greyDark, .1)
 	min-height: 100%
 	.menu
+		width: max-content
 		position: relative
 		.menu-items-container
 			display: flex
@@ -367,7 +368,7 @@ input[type="search"]::-webkit-search-results-decoration
 			height: 100%
 			object-fit: cover
 			border-radius: 50%
-			box-shadow: 0px 6px 16px 1px rgba($accentLight, .2)
+			box-shadow: 0px 6px 18px .1em rgba($accent, .3)
 	&__name
 		font-size: 14px
 		line-height: 14px
@@ -399,46 +400,71 @@ input[type="search"]::-webkit-search-results-decoration
 
 .new-tracks-block-section
 	padding: 0 10px
-	.new-tracks
+
+.new-tracks, .tracks
+	display: flex
+	align-items: flex-start
+	justify-content: space-between
+	.track
 		display: flex
+		flex-direction: column
 		align-items: flex-start
-		justify-content: space-between
-		.track
+		margin: 0 20px
+		&:first-child
+			margin-left: 0
+		&:last-child
+			margin-right: 0
+		&__image
+			width: 160px
+			height: 160px
+			position: relative
+			img
+				object-fit: cover
+				width: 100%
+				height: 100%
+				border-radius: 15px
+				box-shadow: 0px 6px 18px .1em rgba($accent, .2)
+		&__title
+			margin-top: 16px
+			font-size: 14px
+			line-height: 14px
+			max-width: 160px
+			overflow: hidden
+			white-space: nowrap
+			text-overflow: ellipsis
+			padding: 2px 0
+			&, a
+				transition: .3s ease
+				&:hover
+					color: rgba($whiteFA, .8)
+		&__genre, &__artist, &__subtitle
+			font-size: 12px
+			line-height: 12px
+			margin-top: 10px
+			max-width: 160px
+			overflow: hidden
+			white-space: nowrap
+			text-overflow: ellipsis
+			&, a
+				transition: .3s ease
+				color: rgba($greyDark, 1)
+				&:hover
+					color: rgba($greyDark, .8)
+		&__subtitle
+			&:hover
+				color: rgba($greyDark, 1)
+		&__content
 			display: flex
 			flex-direction: column
-			align-items: flex-start
-			margin: 0 20px
-			&:first-child
-				margin-left: 0
-			&:last-child
-				margin-right: 0
-			&__image
-				width: 180px
-				height: 180px
-				position: relative
-				img
-					object-fit: cover
-					width: 100%
-					height: 100%
-					border-radius: 15px
-					box-shadow: 0px 6px 18px .1em rgba($accentLight, .3)
-			&__title
-				margin-top: 20px
-				font-size: 14px
-				line-height: 14px
-				&, a
-					transition: .3s ease
-					&:hover
-						color: rgba($whiteFA, .8)
-			&__genre
-				font-size: 12px
-				line-height: 12px
-				margin-top: 10px
-				&, a
-					transition: .3s ease
-					color: rgba($greyDark, 1)
-					&:hover
-						color: rgba($greyDark, .8)
+			margin-left: 10px
+		&__top
+			font-style: italic
+			color: rgba($accentLight, 1)
+			font-size: 16px
+			line-height: 16px
+			margin-left: 40px
+		&__actions
+			margin-left: 40px
 
 .section__top .btn-watch-all, .btn-watch-all
 	background: transparent
@@ -448,3 +474,79 @@ input[type="search"]::-webkit-search-results-decoration
 	line-height: 12px
 	&:hover
 		color: rgba($greyDark, .8)
+
+.bottom-blocks
+	margin-top: 30px
+	display: flex
+
+.yandex-chart-container
+	margin-left: 30px
+
+.recently-listened-block-section
+	padding: 0 10px
+
+.yandex-chart-block-section
+	padding: 0
+	.tracks
+		flex-direction: column
+		align-items: flex-start
+		justify-content: flex-start
+		.track
+			flex-direction: row
+			align-items: center
+			margin: 10px 0
+			&:first-child
+				margin-top: 0
+			&:last-child
+				margin-bottom: 0
+			&__title
+				margin-top: 0
+				margin-bottom: 5px
+				width: 170px
+				max-width: 170px
+				overflow: hidden
+				text-overflow: ellipsis
+				white-space: nowrap
+			&__artist, &__genre, &__subtitle
+				margin-top: 5px
+			&__image
+				width: 45px
+				height: 45px
+				img
+					border-radius: 3px
+					box-shadow: 0px 3px 16px .1em rgba($accent, .15)
+			&__actions
+				.btn-play
+					max-width: 40px
+					max-height: 40px
+
+.btn-play
+	display: flex
+	align-items: center
+	justify-content: center
+	background: rgba($accent, 1)
+	color: rgba($whiteFA, 1)
+	padding: 10px
+	border-radius: 50%
+	font-size: 16px
+	line-height: 16px
+	&:hover
+		color: rgba($whiteFA, .8)
+	.icon
+		margin-left: 3px
+
+.top-podcasts-block-section
+	margin-top: 10px
+	padding: 10px
+	.tracks
+		.track
+			margin: 0 10px
+			&__image
+				width: 100px
+				height: 100px
+				img
+					border-radius: 8px
+			&__content
+				margin-left: 0
+			&__title, &__subtitle
+				max-width: 100px
