@@ -10,6 +10,9 @@ import LeftMenu from "../LeftMenu";
 import NewTracksBlock from "../NewTracksBlock";
 import {getAuthInfo, getAccountInfo, getNewReleasesState} from "../../Actions/apiActions";
 import LoadingFull from "../LoadingFull";
+import RecentlyListened from "../RecentlyListened";
+import YandexChartBlock from "../YandexChartBlock";
+import TopPodcasts from "../TopPodcasts";
 
 class Home extends Component {
 
@@ -71,9 +74,18 @@ class Home extends Component {
                                 <Section className='home-section' container={"container-fluid"}>
                                     <div className='main-container-first'>
                                         <NewTracksBlock/>
+                                        <div className='bottom-blocks'>
+                                            <div>
+                                                <RecentlyListened/>
+                                                <TopPodcasts/>
+                                            </div>
+                                            <div className='yandex-chart-container'>
+                                                <YandexChartBlock/>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div className='main-container-last'>
-                                        
+
                                     </div>
                                 </Section>
                             </Route>

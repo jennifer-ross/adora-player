@@ -12,13 +12,27 @@ import {getAuthState} from "./Actions/authActions";
 const Login = lazy(() => import("./Components/Pages/Login"));
 const Home = lazy(() => import("./Components/Pages/Home"));
 
+
 class App extends Component {
+
+    constructor(props) {
+        super(props);
+    }
 
     componentDidMount = () => {
         this.props.getAuthState();
         this.props.getAuthInfoState();
         this.props.getAccountInfoState();
     };
+
+    routes = [
+        '/',
+        '/podcasts',
+        '/radio',
+        '/playlist-day',
+        '/premieres',
+        '/dejavu',
+    ];
 
     render() {
         const {isAuthenticated} = this.props;
@@ -28,10 +42,10 @@ class App extends Component {
                 <WindowControl/>
                 <Suspense fallback={<LoadingFull/>}>
                     <Switch>
-                        <PrivateRoute exact path="/" isAuthenticated={isAuthenticated} component={Home}/>
                         <Route path="/login">
                             <Login/>
                         </Route>
+                        <PrivateRoute path='/:page?' isAuthenticated={isAuthenticated} component={Home}/>
                     </Switch>
                 </Suspense>
             </BrowserRouter>

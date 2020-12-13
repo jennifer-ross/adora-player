@@ -4,6 +4,7 @@ import {withTranslation} from "react-i18next";
 import {Link, withRouter} from "react-router-dom";
 import {getAlbumsInfo, getNewReleases, getNewReleasesState} from "../Actions/apiActions";
 import Section from "./Section";
+import LoadingFull from "./LoadingFull";
 
 class NewTracksBlock extends Component {
 
@@ -12,6 +13,7 @@ class NewTracksBlock extends Component {
 
         this.state = {
             tracks: [],
+            countTracks: 6,
         };
     }
 
@@ -30,9 +32,10 @@ class NewTracksBlock extends Component {
 
     getTracksInfo = () => {
         const {newReleases} = this.props;
+        const {countTracks} = this.state;
 
         if (newReleases.data.length > 0) {
-            const tracks = getAlbumsInfo(newReleases.data.slice(0, 5));
+            const tracks = getAlbumsInfo(newReleases.data.slice(0, countTracks));
 
             tracks.then(value => {
                 this.setState({
@@ -50,7 +53,7 @@ class NewTracksBlock extends Component {
                 <div className="new-tracks__track track" key={k}>
                     <Link to='#'>
                         <div className="track__image">
-                            <img src={`https://${track.coverUri.replace('/%%', '')}/200x200`}/>
+                            <img src={`https://${track.coverUri.replace('%%', '200x200')}`}/>
                         </div>
                     </Link>
                     <div className="track__title">
@@ -73,8 +76,13 @@ class NewTracksBlock extends Component {
     };
 
     render() {
-        const {account, newReleases} = this.props;
+        const {account, newReleases, getNewReleases} = this.props;
         const {tracks} = this.state;
+
+        if (newReleases.data.length <=0) {
+            getNewReleases();
+            return (<LoadingFull/>);
+        }
 
         return (
             <Section
@@ -84,7 +92,7 @@ class NewTracksBlock extends Component {
                     <>
                         <h3 className="section__title">Новинки этой недели</h3>
                         <div className="section__top-container">
-                            <Link to='#'>
+                            <Link to='/new-releases'>
                                 <button className="button btn-watch-all">Смотреть все</button>
                             </Link>
                         </div>
