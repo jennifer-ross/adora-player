@@ -39,7 +39,7 @@ const sendUserUrl = url => {
 
 export const sendUserLogin = user => {
     return dispatch => {
-        return axios.get(`https://pda-passport.yandex.ru/passport?mode=auth&login=${user.username}&twoweeks=yes&retpath=`,)
+        return axios.get(`https://passport.yandex.ru/auth?mode=auth&login=${user.username}&twoweeks=no&retpath=`,)
             .then(response => {
                 if (response.request.responseURL) {
                     dispatch(sendUserUrl(response.request.responseURL));

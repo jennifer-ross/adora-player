@@ -6,7 +6,7 @@ import {
     setAdoraCookie
 } from "./index";
 import axios from "axios";
-import {ACCOUNT_INFO, AUTH_INFO, NEW_RELEASES} from "./const";
+import {ACCOUNT_INFO, AUTH_INFO, NEW_RELEASES, NON_MUSIC_BLOCKS, USER_HISTORY, YANDEX_CHART} from "./const";
 
 const apiAxios = axios.create({
     baseURL: 'https://music.yandex.ru/api/v2.1/',
@@ -113,6 +113,102 @@ export const getNewReleases = () => {
 
                         localStorage.setItem('newReleases', JSON.stringify(releases));
                         dispatch(setNewReleases(releases));
+                    }
+                })
+                .catch(error => {
+                    if (error.response && error.response.data) {
+                    }
+                });
+        }
+    };
+};
+
+const setUserHistory = p => ({
+    type: USER_HISTORY.SET_USER_HISTORY,
+    payload: p
+});
+
+export const clearUserHistory = () => ({
+    type: USER_HISTORY.CLEAR_USER_HISTORY
+});
+
+export const getUserHistory = () => {
+    return dispatch => {
+        const authInfo = getAuthInfoStorage();
+
+        if (authInfo !== false) {
+            return defaultAxios.get(`/handlers/library.jsx?owner=${authInfo.login}&filter=history&likeFilter=favorite&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
+                headers: {
+                    'X-Current-UID': authInfo.uid,
+                }
+            })
+                .then(response => {
+                    if (response.data) {
+                        dispatch(setUserHistory(response.data));
+                    }
+                })
+                .catch(error => {
+                    if (error.response && error.response.data) {
+                    }
+                });
+        }
+    };
+};
+
+const setYandexChart = p => ({
+    type: YANDEX_CHART.SET_YANDEX_CHART,
+    payload: p
+});
+
+export const clearYandexChart = () => ({
+    type: YANDEX_CHART.CLEAR_YANDEX_CHART
+});
+
+export const getYandexChart = () => {
+    return dispatch => {
+        const authInfo = getAuthInfoStorage();
+
+        if (authInfo !== false) {
+            return defaultAxios.get(`/handlers/main.jsx?what=chart&chartRegion=world&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
+                headers: {
+                    'X-Current-UID': authInfo.uid,
+                }
+            })
+                .then(response => {
+                    if (response.data) {
+                        dispatch(setYandexChart(response.data));
+                    }
+                })
+                .catch(error => {
+                    if (error.response && error.response.data) {
+                    }
+                });
+        }
+    };
+};
+
+const setNonMusicBlocks = p => ({
+    type: NON_MUSIC_BLOCKS.SET_NON_MUSIC_BLOCKS,
+    payload: p
+});
+
+export const clearNonMusicBlocks = () => ({
+    type: NON_MUSIC_BLOCKS.CLEAR_NON_MUSIC_BLOCKS
+});
+
+export const getNonMusicBlocks = () => {
+    return dispatch => {
+        const authInfo = getAuthInfoStorage();
+
+        if (authInfo !== false) {
+            return defaultAxios.get(`/handlers/non-music.jsx?category=&postfix=&start=0&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
+                headers: {
+                    'X-Current-UID': authInfo.uid,
+                }
+            })
+                .then(response => {
+                    if (response.data) {
+                        dispatch(setNonMusicBlocks(response.data));
                     }
                 })
                 .catch(error => {
