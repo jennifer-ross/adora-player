@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Section from "./Section";
 import {Link, withRouter} from "react-router-dom";
-import {getYandexChart} from "../Actions/apiActions";
+import {getTrackObject, getYandexChart, setPlayerState} from "../Actions/apiActions";
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import Icon from "./Icon";
@@ -16,17 +16,31 @@ class YandexChartBlock extends Component {
         };
     }
 
-
     componentDidMount() {
         this.props.getYandexChart();
     }
 
+    trackPlayClickHandler = e => {
+        e.preventDefault();
+        const {currentTarget} = e;
+        const {trackkey} = currentTarget.dataset;
+        const {getTrackObject, setPlayerState, playerState} = this.props;
+
+        if (playerState.isPaused === false && trackkey.split(':')[0] === playerState.trackid) {
+            setPlayerState(Object.assign(playerState, {isPaused: true}));
+        }else {
+            setPlayerState(Object.assign(playerState, {isPaused:  !playerState.isPaused}));
+            getTrackObject(trackkey);
+        }
+    };
+
     renderTracks = () => {
-        const {yandexChart} = this.props;
+        const {yandexChart, playerTrack, playerState} = this.props;
         const {countTracks} = this.state;
 
-        if (yandexChart && yandexChart.hasOwnProperty('chart') && yandexChart.chart.hasOwnProperty('tracks')) {
-            return yandexChart.chart.tracks.slice(0, countTracks).map((track, k) => {
+        if (yandexChart && yandexChart.hasOwnProperty('charts') && yandexChart.charts.length > 0) {
+            return yandexChart.charts[0].entities.slice(0, countTracks).map((chart, k) => {
+                const track = chart.data.track;
                 const len = track.artists.length;
                 let i = 0;
 
@@ -55,10 +69,10 @@ class YandexChartBlock extends Component {
                             </div>
                         </div>
                         <div className="track__top">
-                            #{k+1}
+                            #{chart.data.chartPosition.position}
                         </div>
                         <div className="track__actions">
-                            <button className="button btn-play"><Icon iconName='fas fa-play'/></button>
+                            <button className="button btn-play" data-trackkey={`${track.id}:${track.albums[0].id}`} onClick={this.trackPlayClickHandler}>{track.id === playerTrack.trackid && playerState.isPaused === false ? <Icon className='pause' iconName='fas fa-pause'/> : <Icon iconName='fas fa-play'/>}</button>
                         </div>
                     </div>
                 );
@@ -93,11 +107,15 @@ class YandexChartBlock extends Component {
 }
 
 const mapStateToProps = state => ({
-    yandexChart: state.yandexChart
+    yandexChart: state.yandexChart,
+    playerTrack: state.playerTrack,
+    playerState: state.playerState,
 });
 
 const mapDispatchToProps = dispatch => ({
     getYandexChart: () => dispatch(getYandexChart()),
+    getTrackObject: (trackkey) => dispatch(getTrackObject(trackkey)),
+    setPlayerState: (p) => dispatch(setPlayerState(p)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(withRouter(YandexChartBlock)));

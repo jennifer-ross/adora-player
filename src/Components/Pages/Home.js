@@ -8,7 +8,7 @@ import Field from "../Field";
 import Icon from "../Icon";
 import LeftMenu from "../LeftMenu";
 import NewTracksBlock from "../NewTracksBlock";
-import {getAuthInfo, getAccountInfo, getNewReleasesState} from "../../Actions/apiActions";
+import {getAuthInfo, getAccountInfo, getNewReleasesState, getTrackDownloadInfo} from "../../Actions/apiActions";
 import LoadingFull from "../LoadingFull";
 import RecentlyListened from "../RecentlyListened";
 import YandexChartBlock from "../YandexChartBlock";
@@ -92,7 +92,7 @@ class Home extends Component {
                         </Switch>
                     </div>
                 </Section>
-                <Player src={'/'} />
+                <Player />
             </>
         );
     }
@@ -108,6 +108,7 @@ const mapDispatchToProps = dispatch => ({
     getAccountInfo: () => dispatch(getAccountInfo()),
     getAuthInfo: () => dispatch(getAuthInfo()),
     getNewReleasesState: () => dispatch(getNewReleasesState()),
+    getTrackDownloadInfo: () => dispatch(getTrackDownloadInfo()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(withRouter(Home)));
