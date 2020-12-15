@@ -7,6 +7,8 @@ import newReleasesReducer from "./newReleasesReducer";
 import userHistoryReducer from "./userHistoryReducer";
 import yandexChartReducer from "./yandexChartReducer";
 import nonMusicBlocksReducer from "./nonMusicBlocksReducer";
+import playerTrackReducer from "./playerTrackReducer";
+import playerStateReducer from "./playerStateReducer";
 
 export default combineReducers({
     auth: authReducer,
@@ -17,4 +19,6 @@ export default combineReducers({
     userHistory: userHistoryReducer,
     yandexChart: yandexChartReducer,
     nonMusicBlocks: nonMusicBlocksReducer,
+    playerTrack: playerTrackReducer,
+    playerState: playerStateReducer,
 });
