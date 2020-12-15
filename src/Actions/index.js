@@ -1,3 +1,5 @@
+import Md5 from "crypto-js/md5";
+
 export const getAuthStorage = () => {
     const adora_user = localStorage.adora_user;
 
@@ -9,6 +11,24 @@ export const getAuthStorage = () => {
         }
     }
     return false;
+};
+
+export const generateHash = audio => {
+    if (audio && audio.hasOwnProperty('path') && audio.hasOwnProperty('s')) {
+        const hash = Md5(`XGRlBW9FXlekgbPrRHuSiA${audio.path.substr(1, audio.path.length-1)}${audio.s}`).toString();
+        return Object.assign(audio, {hash});
+    }
+};
+
+export const generateDownloadUrl = audio => {
+    if (audio && audio.hasOwnProperty('hash') && audio.hasOwnProperty('host') && audio.hasOwnProperty('codec') && audio.hasOwnProperty('ts') && audio.hasOwnProperty('path') && audio.hasOwnProperty('trackid')) {
+        const downloadUrl = `http://${audio.host}/get-${audio.codec}/${audio.hash}/${audio.ts}${audio.path}?track-id=${audio.trackid}&region=225&from=service-search`;
+        return Object.assign(audio, {downloadUrl});
+    }
+};
+
+export const generateAudio = audio => {
+    return generateDownloadUrl(generateHash(audio));
 };
 
 export const getAccountInfoStorage = () => {

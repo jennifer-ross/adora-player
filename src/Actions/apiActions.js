@@ -1,4 +1,5 @@
 import {
+    generateAudio,
     getAccountInfoStorage,
     getAuthInfoStorage,
     getAuthStorage,
@@ -6,7 +7,7 @@ import {
     setAdoraCookie
 } from "./index";
 import axios from "axios";
-import {ACCOUNT_INFO, AUTH_INFO, NEW_RELEASES, NON_MUSIC_BLOCKS, USER_HISTORY, YANDEX_CHART} from "./const";
+import {ACCOUNT_INFO, AUTH_INFO, NEW_RELEASES, NON_MUSIC_BLOCKS, PLAYER, USER_HISTORY, YANDEX_CHART} from "./const";
 
 const apiAxios = axios.create({
     baseURL: 'https://music.yandex.ru/api/v2.1/',
@@ -219,6 +220,78 @@ export const getNonMusicBlocks = () => {
     };
 };
 
+const setTrackPlayer = p => ({
+    type: PLAYER.SET_TRACK_PLAYER,
+    payload: p
+});
+
+export const clearTrackPlayer = () => ({
+    type: PLAYER.CLEAR_TRACK_PLAYER
+});
+
+
+export const getTrackDownloadInfo = trackKey => {
+    const authInfo = getAuthInfoStorage();
+
+    if (authInfo !== false && trackKey) {
+        return apiAxios.get(`/handlers/track/${trackKey}/web-home_new-auto-playlist_of_the_day-playlist-main/download/m?hq=1&external-domain=music.yandex.ru&overembed=no&__t=${Date.now()}`, {
+            headers: {
+                'X-Current-UID': authInfo.uid,
+            }
+        });
+    }
+};
+
+export const storageDownloadFile = src => {
+    const authInfo = getAuthInfoStorage();
+
+    if (authInfo !== false && src) {
+        return apiAxios.get(`${src}&format=json&external-domain=music.yandex.ru&overembed=no&__t=${Date.now()}`, {
+            headers: {
+                'X-Current-UID': authInfo.uid,
+            }
+        });
+    }
+};
+
+export const getTrackInfo = (trackId) => {
+    const authInfo = getAuthInfoStorage();
+
+    if (authInfo !== false && trackId) {
+        return defaultAxios.get(`/handlers/track.jsx?track=${trackId}&lang=ru&external-domain=music.yandex.ru&overembed=false`, {
+            headers: {
+                'X-Current-UID': authInfo.uid,
+            }
+        });
+    }
+};
+
+export const getTrackObject = (trackkey) => {
+    return dispatch => {
+        if (trackkey) {
+            const slplitted = trackkey.split(':');
+            const trackid = slplitted[0];
+            const albumId = slplitted[1];
+
+            getTrackDownloadInfo(trackkey).then(response => {
+                if (response.data) {
+                    const {src, bitrate, codec, gain, preview} = response.data;
+                    storageDownloadFile(src).then(resp => {
+                        const {path, host, s, ts} = resp.data;
+                        const audio = {src, bitrate, codec, gain, preview, host, path, s, ts, trackid, albumId};
+
+                        getTrackInfo(trackid).then(r => {
+                            if (r.data) {
+                                dispatch(setTrackPlayer(generateAudio(Object.assign(audio, {trackInfo: r.data}))));
+                            }
+                        });
+                    });
+                }
+            });
+        }
+    };
+};
+
 export const getAlbumInfo = async albumId => {
     let album = {};
     const authInfo = getAuthInfoStorage();
@@ -288,3 +361,8 @@ export const getAuthInfoState = () => {
         }
     };
 };
+
+export const setPlayerState = p => ({
+    type: PLAYER.SET_PLAYER_STATE,
+    payload: p
+});
