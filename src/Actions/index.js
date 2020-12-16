@@ -13,6 +13,29 @@ export const getAuthStorage = () => {
     return false;
 };
 
+export const getPlayerStateStorage = () => {
+    const playerStateStr = localStorage.playerState;
+
+    if (playerStateStr) {
+        const playerState = JSON.parse(playerStateStr);
+
+        if (playerState.hasOwnProperty('isPaused')) {
+            return playerState;
+        }
+    }
+
+    return {
+        isPaused: true,
+        progress: 0,
+        volume: 1,
+        muted: false,
+        track: {},
+        playlist: [],
+        currentTime: 0,
+    };
+};
+
+
 export const generateHash = audio => {
     if (audio && audio.hasOwnProperty('path') && audio.hasOwnProperty('s')) {
         const hash = Md5(`XGRlBW9FXlekgbPrRHuSiA${audio.path.substr(1, audio.path.length-1)}${audio.s}`).toString();

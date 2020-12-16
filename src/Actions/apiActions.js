@@ -202,7 +202,7 @@ export const getNonMusicBlocks = () => {
         const authInfo = getAuthInfoStorage();
 
         if (authInfo !== false) {
-            return defaultAxios.get(`/handlers/non-music.jsx?category=&postfix=&start=0&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
+            return defaultAxios.get(`/handlers/main.jsx?what=chart&chartType=podcasts&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.1822837925478349`, {
                 headers: {
                     'X-Current-UID': authInfo.uid,
                 }
@@ -361,8 +361,3 @@ export const getAuthInfoState = () => {
         }
     };
 };
-
-export const setPlayerState = p => ({
-    type: PLAYER.SET_PLAYER_STATE,
-    payload: p
-});
