@@ -4,7 +4,7 @@ import Icon from "./Icon";
 import {connect} from "react-redux";
 import {Link, withRouter} from "react-router-dom";
 import {withTranslation} from "react-i18next";
-import {setPlayerState} from "../Actions/apiActions";
+import {setPlayerState} from "../Actions/playerActions";
 
 class Player extends Component {
 
@@ -12,7 +12,6 @@ class Player extends Component {
         super(props);
 
         this.state = {
-            timeOutId: 0,
             seek: false,
         };
 
@@ -29,36 +28,13 @@ class Player extends Component {
 
         this.setTimeBefore(player.currentTime * 1000);
 
-        const progress = (player.currentTime / player.duration).toFixed(8);
-        setPlayerState(Object.assign(playerState, {progress}));
+        const progress = (player.currentTime / player.duration).toFixed(6);
+        setPlayerState(Object.assign(playerState, {progress, currentTime: player.currentTime}));
     };
-
-    componentDidMount() {
-        const {playerTrack, playerState} = this.props;
-
-        this.setTimeAfter();
-        this.setTimeBefore(playerState.progress);
-
-        const timeOutId = setTimeout(() => {
-            const player = this.playerRef.current;
-
-            if (player) {
-                player.currentTime = playerState.progress || 0;
-                player.src = playerTrack.downloadUrl || undefined;
-                player.volume = playerTrack.volume || 1;
-                player.muted = playerTrack.muted || false;
-            }
-        });
-
-        this.setState({timeOutId});
-    }
-
-    componentWillUnmount() {
-        clearTimeout(this.state.timeOutId);
-    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         const {playerTrack, playerState} = this.props;
+        const player = this.playerRef.current;
 
         if (prevProps.playerTrack.trackid !== playerTrack.trackid) {
             this.changedTrack();
@@ -70,6 +46,18 @@ class Player extends Component {
                     this.stopPlayer();
                 }
             }
+        }
+
+        if (!prevProps.playerState.track.hasOwnProperty('downloadUrl') && playerState.track.hasOwnProperty('downloadUrl')) {
+            if (player) {
+                player.currentTime = playerState.currentTime || 0;
+                player.src = playerState.track.downloadUrl || undefined;
+                player.volume = playerState.volume || 1;
+                player.muted = playerState.muted || false;
+            }
+
+            this.setTimeBefore(playerState.currentTime);
+            this.setTimeAfter();
         }
     }
 
@@ -94,7 +82,7 @@ class Player extends Component {
         if (player) {
             if (player.paused === true) {
                 try {
-                    player.play();
+                    player.play().catch(err => {});
                 }catch (e) {
                 }
             }
@@ -108,7 +96,7 @@ class Player extends Component {
         player.src = playerTrack.downloadUrl;
         this.setTimeAfter();
         this.resumePlayer();
-        setPlayerState(Object.assign(playerState, {isPaused: false}));
+        setPlayerState(Object.assign(playerState, {isPaused: false, track: playerTrack}));
     };
 
     trackEndedHandler = () => {
@@ -118,9 +106,9 @@ class Player extends Component {
     };
 
     setTimeAfter= () => {
-        const {playerTrack} = this.props;
+        const {playerState} = this.props;
         const timeAfter = this.timeAfterRef.current;
-        const durationMs = playerTrack.trackInfo.hasOwnProperty('track') ? playerTrack.trackInfo.track.durationMs : 0;
+        const durationMs = playerState.track.trackInfo.hasOwnProperty('track') ? playerState.track.trackInfo.track.durationMs : 0;
 
         if (timeAfter) {
             timeAfter.innerHTML = this.millisToTime(durationMs);
@@ -143,10 +131,10 @@ class Player extends Component {
     };
 
     renderArtists = () => {
-        const {playerTrack} = this.props;
+        const {playerState} = this.props;
 
-        if (playerTrack.trackInfo.hasOwnProperty('track')) {
-            return playerTrack.trackInfo.track.artists.map((artist, k) => {
+        if (playerState.track.hasOwnProperty('trackInfo')) {
+            return playerState.track.trackInfo.track.artists.map((artist, k) => {
                 return (
                     <Link key={k} to=''>{artist.name}</Link>
                 );
@@ -177,7 +165,7 @@ class Player extends Component {
 
         if (progressBar && player) {
             const {width, left} = progressBar.getBoundingClientRect();
-            const progress = player.duration * ((e.clientX - left) / width);
+            const progress = player.duration * ((e.clientX - left) / width).toFixed(6);
 
             player.currentTime = progress;
             setPlayerState(Object.assign(playerState, {progress}));
@@ -207,7 +195,7 @@ class Player extends Component {
 
         if (volumeBar && player) {
             const {width, left} = volumeBar.getBoundingClientRect();
-            const volume = ((e.clientX - left) / width);
+            const volume = ((e.clientX - left) / width).toFixed(6);
 
             player.volume = volume;
             setPlayerState(Object.assign(playerState, {volume}));
@@ -234,7 +222,6 @@ class Player extends Component {
 
     render() {
         const {playerTrack, playerState} = this.props;
-        const {timeBefore, timeAfter} = this.state;
 
         return (
             <div className='player'>
@@ -253,10 +240,10 @@ class Player extends Component {
                     </div>
                     <div className="player__user-actions user-actions">
                         <div className="user-actions__art actions-art">
-                            <img className='actions-art__image' src={`https://${playerTrack.trackInfo.hasOwnProperty('track') ? playerTrack.trackInfo.track.coverUri.replace('%%', '50x50') : null}`}/>
+                            <img className='actions-art__image' src={`https://${playerState.track.hasOwnProperty('trackInfo') ? playerState.track.trackInfo.track.coverUri.replace('%%', '50x50') : null}`}/>
                             <div className='actions-art__container'>
                                 <span className="actions-art__title">
-                                    {playerTrack.trackInfo.hasOwnProperty('track') ? playerTrack.trackInfo.track.title : null}
+                                    {playerState.track.hasOwnProperty('trackInfo') ? playerState.track.trackInfo.track.title : null}
                                 </span>
                                 <span className="actions-art__subtitle">
                                     {

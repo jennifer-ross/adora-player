@@ -13,6 +13,7 @@ import LoadingFull from "../LoadingFull";
 import RecentlyListened from "../RecentlyListened";
 import YandexChartBlock from "../YandexChartBlock";
 import TopPodcasts from "../TopPodcasts";
+import {getPlayerStateState} from "../../Actions/playerActions";
 
 class Home extends Component {
 
@@ -21,7 +22,7 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        const {authInfo, account, getNewReleasesState, getAccountInfo, getAuthInfo} = this.props;
+        const {authInfo, account, getNewReleasesState, getAccountInfo, getAuthInfo, getPlayerStateState} = this.props;
 
         if (!authInfo.login) {
             getAuthInfo();
@@ -32,6 +33,7 @@ class Home extends Component {
         }
 
         getNewReleasesState();
+        getPlayerStateState();
     }
 
     fieldChangeHandler = obj => {
@@ -109,6 +111,7 @@ const mapDispatchToProps = dispatch => ({
     getAuthInfo: () => dispatch(getAuthInfo()),
     getNewReleasesState: () => dispatch(getNewReleasesState()),
     getTrackDownloadInfo: () => dispatch(getTrackDownloadInfo()),
+    getPlayerStateState: () => dispatch(getPlayerStateState()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(withRouter(Home)));

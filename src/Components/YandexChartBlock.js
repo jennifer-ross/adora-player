@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import Section from "./Section";
 import {Link, withRouter} from "react-router-dom";
-import {getTrackObject, getYandexChart, setPlayerState} from "../Actions/apiActions";
+import {getTrackObject, getYandexChart,} from "../Actions/apiActions";
+import {setPlayerState} from "../Actions/playerActions";
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import Icon from "./Icon";
+import {logout} from "../Actions/authActions";
 
 class YandexChartBlock extends Component {
 
@@ -13,6 +15,7 @@ class YandexChartBlock extends Component {
 
         this.state = {
             countTracks: 7,
+            playlist: [],
         };
     }
 
@@ -25,14 +28,34 @@ class YandexChartBlock extends Component {
         const {currentTarget} = e;
         const {trackkey} = currentTarget.dataset;
         const {getTrackObject, setPlayerState, playerState} = this.props;
+        const {playlist} = this.state;
 
         if (playerState.isPaused === false && trackkey.split(':')[0] === playerState.trackid) {
             setPlayerState(Object.assign(playerState, {isPaused: true}));
         }else {
-            setPlayerState(Object.assign(playerState, {isPaused:  !playerState.isPaused}));
+            setPlayerState(Object.assign(playerState, {isPaused:  !playerState.isPaused, playlist}));
             getTrackObject(trackkey);
         }
     };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {yandexChart} = this.props;
+        const {countTracks} = this.state;
+
+        if (prevProps.yandexChart !== yandexChart) {
+            const playlist = [];
+
+            if (yandexChart && yandexChart.hasOwnProperty('charts') && yandexChart.charts.length > 0) {
+                yandexChart.charts[0].entities.slice(0, countTracks).map((chart, k) => {
+                    const track = chart.data.track;
+
+                    playlist.push(track);
+                });
+            }
+
+            this.setState({playlist});
+        }
+    }
 
     renderTracks = () => {
         const {yandexChart, playerTrack, playerState} = this.props;
@@ -72,7 +95,7 @@ class YandexChartBlock extends Component {
                             #{chart.data.chartPosition.position}
                         </div>
                         <div className="track__actions">
-                            <button className="button btn-play" data-trackkey={`${track.id}:${track.albums[0].id}`} onClick={this.trackPlayClickHandler}>{track.id === playerTrack.trackid && playerState.isPaused === false ? <Icon className='pause' iconName='fas fa-pause'/> : <Icon iconName='fas fa-play'/>}</button>
+                            <button className="button btn-play" data-trackkey={`${track.id}:${track.albums[0].id}`} onClick={this.trackPlayClickHandler}>{playerState.track.hasOwnProperty('trackid') && track.id === playerState.track.trackid && playerState.isPaused === false ? <Icon className='pause' iconName='fas fa-pause'/> : <Icon iconName='fas fa-play'/>}</button>
                         </div>
                     </div>
                 );

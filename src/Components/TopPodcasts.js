@@ -25,26 +25,29 @@ class TopPodcasts extends Component {
         const {countTracks} = this.state;
         const {nonMusicBlocks} = this.props;
 
-        if (nonMusicBlocks && nonMusicBlocks.hasOwnProperty('blocks') && nonMusicBlocks.blocks.length > 0) {
-            return nonMusicBlocks.blocks[0].entities.slice(0, countTracks).map((entity, k) => {
+        if (nonMusicBlocks && nonMusicBlocks.hasOwnProperty('chartPositions') && nonMusicBlocks.chartPositions.length > 0) {
+
+            return nonMusicBlocks.chartPositions.slice(0, countTracks).map((value, k) => {
+                const entity = value.album;
+
                 return (
                     <div className="new-tracks__track track" key={k}>
                         <Link to='#'>
                             <div className="track__image">
-                                <img src={`https://${entity.data.image.replace('%%', '100x100')}`}/>
+                                <img src={`https://${entity.coverUri.replace('%%', '100x100')}`}/>
                             </div>
                         </Link>
                         <div className="track__content">
-                            <div className="track__title" title={entity.data.title}>
+                            <div className="track__title" title={entity.title}>
                                 <Link to='#'>
                                     {
-                                        entity.data.title
+                                        entity.title
                                     }
                                 </Link>
                             </div>
-                            <div className="track__subtitle" title={entity.data.subtitle}>
+                            <div className="track__subtitle" title={entity.shortDescription}>
                                 {
-                                    entity.data.subtitle
+                                    entity.shortDescription
                                 }
                             </div>
                         </div>
