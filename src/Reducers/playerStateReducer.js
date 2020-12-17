@@ -8,6 +8,9 @@ const initialState = {
     track: {},
     playlist: [],
     currentTime: 0,
+    repeat: false,
+    next: {},
+    prev: {},
 };
 
 export default function playerTrackReducer(state = initialState, action) {

@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import Icon from "./Icon";
 import {connect} from "react-redux";
 import {Link, withRouter} from "react-router-dom";
 import {withTranslation} from "react-i18next";
 import {setPlayerState} from "../Actions/playerActions";
+import {getTrackObject} from "../Actions/apiActions";
 
 class Player extends Component {
 
@@ -52,12 +54,11 @@ class Player extends Component {
             if (player) {
                 player.currentTime = playerState.currentTime || 0;
                 player.src = playerState.track.downloadUrl || undefined;
-                player.volume = playerState.volume || 1;
+                player.volume = Number(playerState.volume);
                 player.muted = playerState.muted || false;
             }
 
             this.setTimeBefore(playerState.currentTime);
-            this.setTimeAfter();
         }
     }
 
@@ -94,24 +95,75 @@ class Player extends Component {
         const player = this.playerRef.current;
 
         player.src = playerTrack.downloadUrl;
-        this.setTimeAfter();
         this.resumePlayer();
+        this.setNextPrev();
+
         setPlayerState(Object.assign(playerState, {isPaused: false, track: playerTrack}));
+    };
+
+    setNextPrev = () => {
+        const {playerTrack, setPlayerState, playerState} = this.props;
+
+        const next = {};
+        const prev = {};
+
+        if (playerState.playlist.length > 1) {
+            const currentIndex = playerState.playlist.findIndex((value => Number(value.id) === Number(playerTrack.trackid)));
+
+            if (currentIndex !== false) {
+                if (currentIndex >= 1) {
+                    Object.assign(prev, playerState.playlist[currentIndex-1]);
+                }
+
+                if (currentIndex+1 <= playerState.playlist.length) {
+                    Object.assign(next, playerState.playlist[currentIndex+1]);
+                }
+            }
+        }
+
+        setPlayerState(Object.assign(playerState, {next, prev}));
+    };
+
+    nextTrackHandler = () => {
+        const {getTrackObject, playerState, setPlayerState} = this.props;
+
+        if (playerState.next?.id) {
+            getTrackObject(`${playerState.next.id}:${playerState.next.albums[0].id}`);
+            setPlayerState(Object.assign(playerState, {isPaused: false}));
+        }else {
+            if (playerState.repeat === true) {
+                getTrackObject(`${playerState.playlist[0].id}:${playerState.playlist[0].albums[0].id}`);
+                setPlayerState(Object.assign(playerState, {isPaused: false}));
+            }
+        }
+    };
+
+    prevTrackHandler = () => {
+        const {getTrackObject, playerState, setPlayerState} = this.props;
+
+        if (playerState.prev?.id) {
+            getTrackObject(`${playerState.prev.id}:${playerState.prev.albums[0].id}`);
+            setPlayerState(Object.assign(playerState, {isPaused: false}));
+        }
+    };
+
+    loadedHandler = () => {
+        this.setTimeAfter();
     };
 
     trackEndedHandler = () => {
         const {playerTrack, setPlayerState, playerState} = this.props;
 
         setPlayerState(Object.assign(playerState, {isPaused: true}));
+        this.nextTrackHandler();
     };
 
     setTimeAfter= () => {
-        const {playerState} = this.props;
         const timeAfter = this.timeAfterRef.current;
-        const durationMs = playerState.track.trackInfo.hasOwnProperty('track') ? playerState.track.trackInfo.track.durationMs : 0;
+        const player = this.playerRef.current;
 
-        if (timeAfter) {
-            timeAfter.innerHTML = this.millisToTime(durationMs);
+        if (timeAfter && player) {
+            timeAfter.innerHTML = this.millisToTime(player.duration*1000);
         }
     };
 
@@ -227,7 +279,7 @@ class Player extends Component {
             <div className='player'>
                 <div className="container-fluid">
                     <div className="player__track progress">
-                        <div className="progress-bar" ref={this.progressBarRef} onMouseUp={this.mouseUpProgressHandler} onMouseMove={this.mouseMoveProgressHandler} onMouseDown={this.mouseDownProgressHandler}>
+                        <div className="progress-bar" ref={this.progressBarRef} onMouseLeave={this.mouseUpProgressHandler} onMouseUp={this.mouseUpProgressHandler} onMouseMove={this.mouseMoveProgressHandler} onMouseDown={this.mouseDownProgressHandler}>
                             <div className="progress-bar__bg"/>
                             <div className="progress-bar__progress-muted">
                                 <div className="progress__line-muted" style={{transform: `scaleX(${playerState.progress})`}}/>
@@ -236,7 +288,7 @@ class Player extends Component {
                                 <div className="progress__line" style={{transform: `scaleX(${playerState.progress})`}}/>
                             </div>
                         </div>
-                        <audio ref={this.playerRef} onEnded={this.trackEndedHandler} onTimeUpdate={this.timeUpdateHandler}/>
+                        <audio ref={this.playerRef} onLoadedData={this.loadedHandler} onEnded={this.trackEndedHandler} onTimeUpdate={this.timeUpdateHandler}/>
                     </div>
                     <div className="player__user-actions user-actions">
                         <div className="user-actions__art actions-art">
@@ -254,16 +306,16 @@ class Player extends Component {
                         </div>
                         <div className="user-actions__center-control center-control">
                             <div className="user-actions__time actions-time">
-                                <span className='actions-time-left' ref={this.timeBeforeRef}/>
+                                <span className='actions-time-left' ref={this.timeBeforeRef}>0:00</span>
                                 <span className='actions-time-divider'/>
-                                <span className='actions-time-right' ref={this.timeAfterRef}/>
+                                <span className='actions-time-right' ref={this.timeAfterRef}>0:00</span>
                             </div>
                             <div className="user-actions__control-buttons control-buttons">
                                 <button className="button control-buttons__random"><Icon iconName='far fa-random'/></button>
-                                <button className="button control-buttons__prev"><Icon iconName='fas fa-fast-backward'/></button>
+                                <button className="button control-buttons__prev" onClick={this.prevTrackHandler}><Icon iconName='fas fa-fast-backward'/></button>
                                 <button className="button control-buttons__play" onClick={this.playClickHandler}>{playerState.isPaused ? <Icon iconName='fas fa-play'/> : <Icon className='pause' iconName='fas fa-pause'/>}</button>
-                                <button className="button control-buttons__next"><Icon iconName='fas fa-fast-forward'/></button>
-                                <button className="button control-buttons__repeat"><Icon iconName='far fa-redo-alt'/></button>
+                                <button className="button control-buttons__next" onClick={this.nextTrackHandler}><Icon iconName='fas fa-fast-forward'/></button>
+                                <button className={classNames('button control-buttons__repeat', playerState.repeat !== true || 'active')}><Icon iconName='far fa-redo-alt'/></button>
                             </div>
                         </div>
                         <div className="user-actions__right-control right-control">
@@ -271,7 +323,7 @@ class Player extends Component {
                                 <button className="button sound-buttons__like"><Icon iconName='fas fa-heart'/></button>
                                 <button className="button sound-buttons__add-paylist"><Icon iconName='far fa-list-music'/></button>
                                 <button className="button sound-buttons__mute" onClick={this.muteClickHandler}>{playerState.muted ? <Icon iconName='far fa-volume-mute'/> : <Icon iconName='far fa-volume-up'/>}</button>
-                                <div className="sound-track progress" ref={this.volumeBarRef} onMouseUp={this.mouseUpVolumeHandler} onMouseMove={this.mouseMoveVolumeHandler} onMouseDown={this.mouseDownVolumeHandler}>
+                                <div className="sound-track progress" ref={this.volumeBarRef} onMouseLeave={this.mouseUpVolumeHandler} onMouseUp={this.mouseUpVolumeHandler} onMouseMove={this.mouseMoveVolumeHandler} onMouseDown={this.mouseDownVolumeHandler}>
                                     <div className="progress-bar">
                                         <div className="progress-bar__bg"/>
                                         <div className="progress-bar__progress-muted">
@@ -298,6 +350,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     setPlayerState: (p) => dispatch(setPlayerState(p)),
+    getTrackObject: (trackkey) => dispatch(getTrackObject(trackkey)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(withRouter(Player)));

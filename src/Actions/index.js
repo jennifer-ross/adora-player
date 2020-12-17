@@ -32,6 +32,9 @@ export const getPlayerStateStorage = () => {
         track: {},
         playlist: [],
         currentTime: 0,
+        repeat: false,
+        next: {},
+        prev: {},
     };
 };
 
