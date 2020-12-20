@@ -3,7 +3,7 @@ import Section from "./Section";
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import {Link, withRouter} from "react-router-dom";
-import {getAlbumsInfo, getUserHistory} from "../Actions/apiActions";
+import {getUserHistory} from "../Actions/apiActions";
 
 class RecentlyListened extends Component {
 
@@ -21,8 +21,13 @@ class RecentlyListened extends Component {
 
     renderTracks = () => {
         const {countTracks} = this.state;
+        const {userHistory} = this.props;
 
-        return this.props.userHistory.tracks.slice(0, countTracks).map((track, k) => {
+        if (!userHistory?.tracks) {
+            return null;
+        }
+
+        return userHistory.tracks.slice(0, countTracks).map((track, k) => {
             const len = track.artists.length;
             let i = 0;
 

@@ -6,7 +6,6 @@ import {setPlayerState} from "../Actions/playerActions";
 import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import Icon from "./Icon";
-import {logout} from "../Actions/authActions";
 
 class YandexChartBlock extends Component {
 
@@ -45,7 +44,7 @@ class YandexChartBlock extends Component {
         if (prevProps.yandexChart !== yandexChart) {
             const playlist = [];
 
-            if (yandexChart && yandexChart.hasOwnProperty('charts') && yandexChart.charts.length > 0) {
+            if (yandexChart && yandexChart?.charts && yandexChart.charts.length > 0) {
                 yandexChart.charts[0].entities.slice(0, countTracks).map((chart, k) => {
                     const track = chart.data.track;
 
@@ -61,7 +60,7 @@ class YandexChartBlock extends Component {
         const {yandexChart, playerTrack, playerState} = this.props;
         const {countTracks} = this.state;
 
-        if (yandexChart && yandexChart.hasOwnProperty('charts') && yandexChart.charts.length > 0) {
+        if (yandexChart && yandexChart?.charts && yandexChart.charts.length > 0) {
             return yandexChart.charts[0].entities.slice(0, countTracks).map((chart, k) => {
                 const track = chart.data.track;
                 const len = track.artists.length;
@@ -95,7 +94,7 @@ class YandexChartBlock extends Component {
                             #{chart.data.chartPosition.position}
                         </div>
                         <div className="track__actions">
-                            <button className="button btn-play" data-trackkey={`${track.id}:${track.albums[0].id}`} onClick={this.trackPlayClickHandler}>{playerState.track.hasOwnProperty('trackid') && track.id === playerState.track.trackid && playerState.isPaused === false ? <Icon className='pause' iconName='fas fa-pause'/> : <Icon iconName='fas fa-play'/>}</button>
+                            <button className="button btn-play" data-trackkey={`${track.id}:${track.albums[0].id}`} onClick={this.trackPlayClickHandler}>{playerState.track?.trackid && track.id === playerState.track.trackid && playerState.isPaused === false ? <Icon className='pause' iconName='fas fa-pause'/> : <Icon iconName='fas fa-play'/>}</button>
                         </div>
                     </div>
                 );

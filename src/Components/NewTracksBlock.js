@@ -66,7 +66,7 @@ class NewTracksBlock extends Component {
                     <div className="track__genre">
                         <Link to='#'>
                             {
-                                track.hasOwnProperty('genre') ? track.genre : null
+                                track?.genre ? track.genre : null
                             }
                         </Link>
                     </div>

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Icon from "./Icon";
 import {connect} from "react-redux";
@@ -50,7 +49,7 @@ class Player extends Component {
             }
         }
 
-        if (!prevProps.playerState.track.hasOwnProperty('downloadUrl') && playerState.track.hasOwnProperty('downloadUrl')) {
+        if (!prevProps.playerState.track?.downloadUrl && playerState.track?.downloadUrl) {
             if (player) {
                 player.currentTime = playerState.currentTime || 0;
                 player.src = playerState.track.downloadUrl || undefined;
@@ -185,7 +184,7 @@ class Player extends Component {
     renderArtists = () => {
         const {playerState} = this.props;
 
-        if (playerState.track.hasOwnProperty('trackInfo')) {
+        if (playerState.track?.trackInfo) {
             return playerState.track.trackInfo.track.artists.map((artist, k) => {
                 return (
                     <Link key={k} to=''>{artist.name}</Link>
@@ -292,10 +291,10 @@ class Player extends Component {
                     </div>
                     <div className="player__user-actions user-actions">
                         <div className="user-actions__art actions-art">
-                            <img className='actions-art__image' src={`https://${playerState.track.hasOwnProperty('trackInfo') ? playerState.track.trackInfo.track.coverUri.replace('%%', '50x50') : null}`}/>
+                            <img className='actions-art__image' src={`https://${playerState.track?.trackInfo ? playerState.track.trackInfo.track.coverUri.replace('%%', '50x50') : null}`}/>
                             <div className='actions-art__container'>
                                 <span className="actions-art__title">
-                                    {playerState.track.hasOwnProperty('trackInfo') ? playerState.track.trackInfo.track.title : null}
+                                    {playerState.track?.trackInfo ? playerState.track.trackInfo.track.title : null}
                                 </span>
                                 <span className="actions-art__subtitle">
                                     {

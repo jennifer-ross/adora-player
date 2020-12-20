@@ -6,7 +6,7 @@ export const getAuthStorage = () => {
     if (adora_user) {
         const adora = JSON.parse(adora_user);
 
-        if (adora.hasOwnProperty('Session_id') && adora.hasOwnProperty('sessguard') && adora.hasOwnProperty('sessionid2')) {
+        if (adora?.Session_id && adora?.sessguard && adora?.sessionid2) {
             return adora;
         }
     }
@@ -19,7 +19,7 @@ export const getPlayerStateStorage = () => {
     if (playerStateStr) {
         const playerState = JSON.parse(playerStateStr);
 
-        if (playerState.hasOwnProperty('isPaused')) {
+        if (playerState?.isPaused) {
             return playerState;
         }
     }
@@ -40,14 +40,14 @@ export const getPlayerStateStorage = () => {
 
 
 export const generateHash = audio => {
-    if (audio && audio.hasOwnProperty('path') && audio.hasOwnProperty('s')) {
+    if (audio && audio?.path && audio?.s) {
         const hash = Md5(`XGRlBW9FXlekgbPrRHuSiA${audio.path.substr(1, audio.path.length-1)}${audio.s}`).toString();
         return Object.assign(audio, {hash});
     }
 };
 
 export const generateDownloadUrl = audio => {
-    if (audio && audio.hasOwnProperty('hash') && audio.hasOwnProperty('host') && audio.hasOwnProperty('codec') && audio.hasOwnProperty('ts') && audio.hasOwnProperty('path') && audio.hasOwnProperty('trackid')) {
+    if (audio && audio?.hash && audio?.host && audio?.codec && audio?.ts && audio?.path && audio?.trackid) {
         const downloadUrl = `http://${audio.host}/get-${audio.codec}/${audio.hash}/${audio.ts}${audio.path}?track-id=${audio.trackid}&region=225&from=service-search`;
         return Object.assign(audio, {downloadUrl});
     }
@@ -63,7 +63,7 @@ export const getAccountInfoStorage = () => {
     if (accountInfo) {
         const info = JSON.parse(accountInfo);
 
-        if (info.hasOwnProperty('device_id') && info.hasOwnProperty('uid')) {
+        if (info?.device_id && info?.uid) {
             return info;
         }
     }
@@ -76,7 +76,7 @@ export const getAuthInfoStorage = () => {
     if (authInfo) {
         const info = JSON.parse(authInfo);
 
-        if (info.hasOwnProperty('device_id') && info.hasOwnProperty('login')) {
+        if (info?.device_id && info?.login) {
             return info;
         }
     }

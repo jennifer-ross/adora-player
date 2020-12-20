@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import {withTranslation} from "react-i18next";
 import Section from "./Section";
 import {Link, withRouter} from "react-router-dom";
-import Icon from "./Icon";
 import {getNonMusicBlocks} from "../Actions/apiActions";
 
 class TopPodcasts extends Component {
@@ -25,7 +24,7 @@ class TopPodcasts extends Component {
         const {countTracks} = this.state;
         const {nonMusicBlocks} = this.props;
 
-        if (nonMusicBlocks && nonMusicBlocks.hasOwnProperty('chartPositions') && nonMusicBlocks.chartPositions.length > 0) {
+        if (nonMusicBlocks && nonMusicBlocks?.chartPositions && nonMusicBlocks.chartPositions.length > 0) {
 
             return nonMusicBlocks.chartPositions.slice(0, countTracks).map((value, k) => {
                 const entity = value.album;
