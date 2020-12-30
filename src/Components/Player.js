@@ -5,7 +5,12 @@ import {connect} from "react-redux";
 import {Link, withRouter} from "react-router-dom";
 import {withTranslation} from "react-i18next";
 import {setPlayerState} from "../Actions/playerActions";
-import {getTrackObject} from "../Actions/apiActions";
+import {
+    getTrackObject,
+    getUserHistory,
+    setEndTrackState,
+    setStartTrackState, setUserHistory
+} from "../Actions/apiActions";
 
 class Player extends Component {
 
@@ -90,7 +95,7 @@ class Player extends Component {
     };
 
     changedTrack = () => {
-        const {playerTrack, setPlayerState, playerState} = this.props;
+        const {playerTrack, setPlayerState, playerState, setStartTrackState, account} = this.props;
         const player = this.playerRef.current;
 
         player.src = playerTrack.downloadUrl;
@@ -98,6 +103,7 @@ class Player extends Component {
         this.setNextPrev();
 
         setPlayerState(Object.assign(playerState, {isPaused: false, track: playerTrack}));
+        setStartTrackState(playerState.track.trackid, playerState.track.albumId, account.sign, account.device_id);
     };
 
     setNextPrev = () => {
@@ -127,10 +133,12 @@ class Player extends Component {
         const {getTrackObject, playerState, setPlayerState} = this.props;
 
         if (playerState.next?.id) {
+            this.endTackEvents();
             getTrackObject(`${playerState.next.id}:${playerState.next.albums[0].id}`);
             setPlayerState(Object.assign(playerState, {isPaused: false}));
         }else {
             if (playerState.repeat === true) {
+                this.endTackEvents();
                 getTrackObject(`${playerState.playlist[0].id}:${playerState.playlist[0].albums[0].id}`);
                 setPlayerState(Object.assign(playerState, {isPaused: false}));
             }
@@ -141,6 +149,7 @@ class Player extends Component {
         const {getTrackObject, playerState, setPlayerState} = this.props;
 
         if (playerState.prev?.id) {
+            this.endTackEvents();
             getTrackObject(`${playerState.prev.id}:${playerState.prev.albums[0].id}`);
             setPlayerState(Object.assign(playerState, {isPaused: false}));
         }
@@ -151,11 +160,20 @@ class Player extends Component {
     };
 
     trackEndedHandler = () => {
-        const {playerTrack, setPlayerState, playerState} = this.props;
+        const {setPlayerState, playerState} = this.props;
 
         setPlayerState(Object.assign(playerState, {isPaused: true}));
+        this.endTackEvents();
         this.nextTrackHandler();
     };
+
+    endTackEvents = () => {
+        const {playerState, setEndTrackState, account, userHistory, setUserHistory} = this.props;
+
+        setEndTrackState(playerState.track.trackid, playerState.track.albumId, account.sign, account.device_id);
+        userHistory.tracks.unshift(playerState.track.trackInfo.track);
+        setUserHistory(userHistory);
+    }
 
     setTimeAfter= () => {
         const timeAfter = this.timeAfterRef.current;
@@ -345,11 +363,16 @@ class Player extends Component {
 const mapStateToProps = state => ({
     playerTrack: state.playerTrack,
     playerState: state.playerState,
+    account: state.account,
+    userHistory: state.userHistory,
 });
 
 const mapDispatchToProps = dispatch => ({
     setPlayerState: (p) => dispatch(setPlayerState(p)),
     getTrackObject: (trackkey) => dispatch(getTrackObject(trackkey)),
+    setStartTrackState: (trackId, albumId, sign, deviceId) => dispatch(setStartTrackState(trackId, albumId, sign, deviceId)),
+    setEndTrackState: (trackId, albumId, sign, deviceId) => dispatch(setEndTrackState(trackId, albumId, sign, deviceId)),
+    setUserHistory: (p) => dispatch(setUserHistory(p)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(withRouter(Player)));
