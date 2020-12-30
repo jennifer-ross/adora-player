@@ -29,10 +29,15 @@ class YandexChartBlock extends Component {
         const {getTrackObject, setPlayerState, playerState} = this.props;
         const {playlist} = this.state;
 
-        if (playerState.isPaused === false && trackkey.split(':')[0] === playerState.trackid) {
+        const isCurrent = trackkey.split(':')[0] === playerState.track.trackid;
+
+        if (playerState.isPaused === false && isCurrent === true) {
             setPlayerState(Object.assign(playerState, {isPaused: true}));
         }else {
             setPlayerState(Object.assign(playerState, {isPaused:  !playerState.isPaused, playlist}));
+
+            if (isCurrent === true) return;
+
             getTrackObject(trackkey);
         }
     };
