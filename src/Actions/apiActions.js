@@ -124,7 +124,7 @@ export const getNewReleases = () => {
     };
 };
 
-const setUserHistory = p => ({
+export const setUserHistory = p => ({
     type: USER_HISTORY.SET_USER_HISTORY,
     payload: p
 });
@@ -264,6 +264,91 @@ export const getTrackInfo = (trackId) => {
             }
         });
     }
+};
+
+export const setStartTrackState = (trackId, albumId, sign, device) => {
+    return dispatch => {
+        const authInfo = getAuthInfoStorage();
+
+        if (authInfo !== false && trackId !== undefined && albumId !== undefined) {
+            const requestPayload = {
+                data: [
+                    {
+                        addTracksToPlayerTime: `${Math.random().toString().slice(2)}-${Date.now().toString().substr(0, 10)}`,
+                        album: albumId,
+                        context: "common",
+                        duration: 0,
+                        from: "web-own_tracks-track-track-main",
+                        nextTrackId: null,
+                        playId: `${device}:${trackId}:${Math.random().toString().slice(2)}`,
+                        played: 0,
+                        position: 0,
+                        preview: false,
+                        restored: false,
+                        sendReason: "start",
+                        timestamp: Date.now(),
+                        trackId: trackId,
+                        yaDisk: false,
+                    }
+                ],
+                'external-domain': "music.yandex.ru",
+                overembed: "no",
+                sign: sign,
+                timestamp: Date.now(),
+            };
+            return apiAxios.post(`/handlers/track/${trackId}:${albumId}/web-own_tracks-track-track-main/feedback/start?__t=${Date.now()}`,
+                requestPayload,
+                {
+                    headers: {
+                        'X-Current-UID': authInfo.uid,
+                    },
+                }
+            );
+        }
+    };
+};
+
+export const setEndTrackState = (trackId, albumId, sign, device) => {
+    return dispatch => {
+        const authInfo = getAuthInfoStorage();
+
+        if (authInfo !== false && trackId !== undefined && albumId !== undefined) {
+            const requestPayload = {
+                data: [
+                    {
+                        addTracksToPlayerTime: `${Math.random().toString().slice(2)}-${Date.now().toString().substr(0, 10)}`,
+                        album: albumId,
+                        context: "common",
+                        duration: 0,
+                        from: "web-own_tracks-track-track-main",
+                        nextTrackId: null,
+                        nextTrackChanged: false,
+                        playId: `${device}:${trackId}:${Math.random().toString().slice(2)}`,
+                        played: 0.999984,
+                        position: 0.999984,
+                        preview: false,
+                        restored: false,
+                        sendReason: "end",
+                        timestamp: Date.now(),
+                        trackId: trackId,
+                        yaDisk: false,
+                    }
+                ],
+                'external-domain': "music.yandex.ru",
+                overembed: "no",
+                sign: sign,
+                timestamp: Date.now(),
+            };
+            return apiAxios.post(`/handlers/track/${trackId}:${albumId}/web-own_tracks-track-track-main/feedback/end?__t=${Date.now()}`,
+                requestPayload,
+                {
+                    headers: {
+                        'X-Current-UID': authInfo.uid,
+                    },
+                }
+            );
+        }
+    };
 };
 
 export const getTrackObject = (trackkey) => {
